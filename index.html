@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>بایگانی مدارک</title>
+<style>
+:root {
+  --bg: #f1f5f9;
+  --text: #17324f;
+  --header: #173b64;
+  --card: #ffffff;
+  --border: #d7e0eb;
+  --cat-bg: #e5eef9;
+  --cat-text: #173b64;
+  --cat-active: #173b64;
+  --secondary: #e5eef9;
+  --secondary-text: #173b64;
+  --danger: #b72e3b;
+  --success: #2f855a;
+  --muted: #718096;
+  --doc-border: #e5eaf0;
+  --doc-text: #4a5568;
+  --file-bg: #f8fafc;
+  --drop-border: #cbd5e0;
+  --toast-bg: #17324f;
+  --input-bg: #ffffff;
+  --shadow: #00000008;
+}
+body.theme-dark {
+  --bg: #0f172a;
+  --text: #e2e8f0;
+  --header: #1e3a5f;
+  --card: #1e293b;
+  --border: #334155;
+  --cat-bg: #1e3a5f;
+  --cat-text: #93c5fd;
+  --cat-active: #3b82f6;
+  --secondary: #1e3a5f;
+  --secondary-text: #93c5fd;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --muted: #94a3b8;
+  --doc-border: #334155;
+  --doc-text: #94a3b8;
+  --file-bg: #0f172a;
+  --drop-border: #475569;
+  --toast-bg: #1e293b;
+  --input-bg: #0f172a;
+  --shadow: #00000040;
+}
+body.theme-green {
+  --header: #166534;
+  --cat-bg: #dcfce7;
+  --cat-text: #166534;
+  --cat-active: #166534;
+  --secondary: #dcfce7;
+  --secondary-text: #166534;
+  --toast-bg: #14532d;
+}
+body.theme-purple {
+  --header: #5b21b6;
+  --cat-bg: #ede9fe;
+  --cat-text: #5b21b6;
+  --cat-active: #5b21b6;
+  --secondary: #ede9fe;
+  --secondary-text: #5b21b6;
+  --toast-bg: #4c1d95;
+}
+body.theme-orange {
+  --header: #c2410c;
+  --cat-bg: #ffedd5;
+  --cat-text: #c2410c;
+  --cat-active: #c2410c;
+  --secondary: #ffedd5;
+  --secondary-text: #c2410c;
+  --toast-bg: #9a3412;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,sans-serif;transition:background .25s,color .25s}
+header{background:var(--header);color:white;padding:24px 16px;border-radius:0 0 24px 24px}
+main{max-width:700px;margin:auto;padding:14px}
+h1{font-size:23px;margin:0 0 6px}h2{font-size:17px;margin:0 0 12px}
+.card{background:var(--card);border-radius:15px;padding:15px;margin:12px 0;box-shadow:0 3px 12px var(--shadow)}
+input,textarea,select,button{font:inherit;padding:12px;border-radius:10px;border:1px solid var(--border)}
+input,textarea,select{width:100%;background:var(--input-bg);color:var(--text)}
+button{background:var(--header);color:white;border:0;cursor:pointer;transition:opacity .15s}
+button:active{opacity:.85}
+.row{display:flex;gap:8px;margin:9px 0;flex-wrap:wrap}
+.row>*{flex:1;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.cat{background:var(--cat-bg);color:var(--cat-text);text-align:right;padding:10px}
+.cat.active{background:var(--cat-active);color:white}
+.small{font-size:12px;color:var(--muted)}
+.doc{border-bottom:1px solid var(--doc-border);padding:14px 0}
+.doc:last-child{border:0}
+.doc h3{margin:0 0 6px;font-size:15px}
+.doc p{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0;font-size:13px;color:var(--doc-text)}
+.secondary{background:var(--secondary);color:var(--secondary-text)}
+.danger{background:var(--danger)}
+.success{background:var(--success)}
+.hidden{display:none!important}
+#login{position:fixed;inset:0;background:var(--header);z-index:9;display:flex;align-items:center;justify-content:center;padding:20px}
+#login .card{width:100%;max-width:350px;text-align:center}
+#password,#setupPass,#setupPass2,#oldPass,#newPass,#newPass2{text-align:center;font-size:22px;letter-spacing:6px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.thumbs img{width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer}
+.file-item{display:flex;align-items:center;gap:8px;padding:10px;background:var(--file-bg);border-radius:10px;margin:8px 0;font-size:13px;flex-wrap:wrap}
+.file-item .thumb{width:64px;height:64px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--border)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:white;padding:12px 20px;border-radius:12px;z-index:999;font-size:14px;box-shadow:0 4px 20px #0003;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.dropzone{border:2px dashed var(--drop-border);border-radius:12px;padding:18px;text-align:center;color:var(--muted);margin:10px 0;transition:all .2s}
+.dropzone.dragover{border-color:var(--header);background:var(--cat-bg);color:var(--cat-text)}
+.badge{display:inline-block;background:var(--cat-bg);color:var(--cat-text);font-size:11px;padding:2px 8px;border-radius:20px;margin-left:4px}
+.modal-bg{position:fixed;inset:0;background:#0007;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--card);color:var(--text);border-radius:16px;padding:20px;max-width:440px;width:100%;max-height:88vh;overflow:auto}
+.modal h3{margin:0 0 10px}
+.cat-manage{display:flex;align-items:center;gap:6px;margin:6px 0}
+.cat-manage input{flex:1}
+.cat-manage button{flex:0;padding:8px 10px;font-size:13px}
+.theme-btn{padding:10px;border-radius:10px;border:2px solid transparent;cursor:pointer;font-size:13px;text-align:center}
+.theme-btn.active{border-color:var(--header);font-weight:bold}
+.settings-section{margin:16px 0;padding-top:12px;border-top:1px solid var(--doc-border)}
+.settings-section:first-child{border-top:0;padding-top:0;margin-top:0}
+
+/* Lightbox / Zoom viewer */
+#lightbox{position:fixed;inset:0;background:#000e;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center}
+#lightbox.show{display:flex}
+#lightbox .toolbar{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;justify-content:center;padding:12px;background:#000a;z-index:2}
+#lightbox .toolbar button{padding:10px 16px;font-size:15px;border-radius:10px;min-width:48px}
+#lb-img-wrap{flex:1;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none}
+#lb-img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center center;transition:transform .05s;user-select:none;-webkit-user-drag:none}
+#lightbox .close-btn{position:absolute;top:12px;right:12px;background:#b72e3b;z-index:3;padding:10px 14px}
+
+/* Camera & pick buttons */
+.pick-row{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
+.pick-btn{flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px 12px;border-radius:14px;border:2px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:13px;transition:all .15s}
+.pick-btn:active{opacity:.85;transform:scale(.98)}
+.pick-btn .icon{font-size:36px;line-height:1}
+.pick-btn.cam{border-color:#3b82f6;background:linear-gradient(180deg,#eff6ff,#dbeafe)}
+.pick-btn.folder{border-color:#eab308;background:linear-gradient(180deg,#fefce8,#fef9c3)}
+body.theme-dark .pick-btn.cam{background:linear-gradient(180deg,#1e3a5f,#0f172a);border-color:#3b82f6}
+body.theme-dark .pick-btn.folder{background:linear-gradient(180deg,#422006,#0f172a);border-color:#eab308}
+
+/* Camera modal */
+#camModal{position:fixed;inset:0;background:#000;z-index:110;display:none;flex-direction:column}
+#camModal.show{display:flex}
+#camVideo{flex:1;width:100%;object-fit:cover;background:#000}
+#camToolbar{display:flex;gap:10px;justify-content:center;align-items:center;padding:14px;background:#000c;flex-wrap:wrap}
+#camToolbar button{padding:12px 16px;font-size:14px;border-radius:12px;min-width:52px}
+#camZoom{width:140px;accent-color:#3b82f6}
+.cam-hint{color:#94a3b8;font-size:12px;text-align:center;padding:4px}
+
+</style>
+</head>
+<body>
+
+<div id="login">
+ <div class="card">
+  <div style="font-size:42px">🔐</div>
+  <h2>بایگانی مدارک</h2>
+  <p class="small" style="margin:8px 0 4px;color:#64748b">سازنده: alireza10721@gmail.com</p>
+
+  <!-- حالت ورود عادی -->
+  <div id="loginNormal">
+    <p class="small">رمز ورود را وارد کن</p>
+    <input id="password" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off">
+    <br><br>
+    <button style="width:100%" onclick="login()">ورود</button>
+  </div>
+
+  <!-- حالت تنظیم رمز اول -->
+  <div id="loginSetup" class="hidden">
+    <p class="small" id="setupMsg">لطفاً یک رمز انتخاب کنید (بین ۴ تا ۸ رقم)</p>
+    <input id="setupPass" type="password" inputmode="numeric" maxlength="8" placeholder="رمز جدید" autocomplete="off">
+    <br><br>
+    <input id="setupPass2" type="password" inputmode="numeric" maxlength="8" placeholder="تکرار رمز" autocomplete="off">
+    <br><br>
+    <button style="width:100%" onclick="setupPassword()">ذخیره رمز و ورود</button>
+  </div>
+
+  <p id="error" style="color:#b72e3b;margin-top:10px"></p>
+ </div>
+</div>
+
+<header>
+ <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+  <div>
+   <h1>🗂️ بایگانی مدارک</h1>
+   <div style="opacity:.9;font-size:14px">همه مدارکت را یک‌جا مرتب کن</div>
+  </div>
+  <button id="settingsBtn" class="secondary" style="padding:8px 12px;font-size:13px;flex-shrink:0" onclick="openSettings()">⚙️ تنظیمات</button>
+ </div>
+ <div class="row" style="margin-top:14px">
+  <div class="card" style="background:#ffffff20;color:white;margin:0;padding:12px">
+   <b id="count">۰</b><br><small style="color:#e2e8f0">مدرک</small>
+  </div>
+  <div class="card" style="background:#ffffff20;color:white;margin:0;padding:12px">
+   <b id="filesCount">۰</b><br><small style="color:#e2e8f0">فایل</small>
+  </div>
+ </div>
+</header>
+
+<main id="app" class="hidden">
+ <input id="search" placeholder="🔎 جست‌وجوی عنوان، توضیحات، نام فایل..." oninput="render()">
+
+ <section class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+   <h2 style="margin:0;flex:1;min-width:140px">دسته‌بندی‌ها (پوشه‌ها)</h2>
+   <button class="secondary" style="padding:8px 14px;font-size:13px;flex-shrink:0" onclick="toggleCatManage()">⚙️ مدیریت</button>
+  </div>
+  <div id="categories" class="grid"></div>
+  <div class="row" style="margin-top:10px">
+   <input id="newCat" placeholder="نام پوشه جدید (مثل: مدارک آپارتمان نارنج)">
+   <button onclick="addCat()">＋ افزودن</button>
+  </div>
+  <div id="catManage" class="hidden" style="margin-top:12px;border-top:1px solid var(--doc-border);padding-top:12px">
+   <p class="small" style="margin:0 0 8px">تغییر نام یا حذف پوشه‌ها:</p>
+   <div id="catList"></div>
+  </div>
+ </section>
+
+ <section class="card" id="form">
+  <h2 id="formTitle">➕ افزودن مدرک</h2>
+  <input id="title" placeholder="عنوان مدرک">
+  <br><br>
+  <select id="category"></select>
+  <br><br>
+  <textarea id="description" rows="3" placeholder="توضیحات شخصی، شماره پرونده و نکته‌ها"></textarea>
+  <br><br>
+
+  <div id="dropzone" class="dropzone">
+   فایل‌ها را اینجا رها کنید<br>
+   <span class="small">یا از دکمه‌های زیر استفاده کنید — چند عکس همزمان قابل انتخاب است</span>
+  </div>
+
+  <div class="pick-row">
+    <button type="button" class="pick-btn cam" onclick="openCamera()">
+      <span class="icon">📷</span>
+      <span>دوربین</span>
+      <span class="small" style="opacity:.8">عکس / اسکن مدرک</span>
+    </button>
+    <button type="button" class="pick-btn folder" onclick="document.getElementById('gallery').click()">
+      <span class="icon">🖼️</span>
+      <span>انتخاب از گالری</span>
+      <span class="small" style="opacity:.8">انتخاب چند عکس با هم</span>
+    </button>
+    <button type="button" class="pick-btn folder" onclick="document.getElementById('filePicker').click()">
+      <span class="icon">📁</span>
+      <span>فایل‌های گوشی</span>
+      <span class="small" style="opacity:.8">روش جایگزین انتخاب فایل</span>
+    </button>
+  </div>
+
+  <!-- انتخاب‌گر گالری و روش جایگزین فایل‌های گوشی؛ انتخاب چندتایی در صورت پشتیبانی دستگاه -->
+  <input id="gallery" type="file" accept="image/*,.pdf,.txt,.doc,.docx,.xls,.xlsx" multiple class="hidden">
+  <input id="filePicker" type="file" accept="*/*" multiple class="hidden">
+  <input id="camera" type="file" accept="image/*" capture="environment" class="hidden">
+
+  <div id="pending"></div>
+  <div class="row">
+   <button onclick="saveDoc()">💾 ذخیره</button>
+   <button class="secondary" onclick="resetForm()">لغو</button>
+  </div>
+ </section>
+
+ <section class="card" style="text-align:center">
+  <h2 style="margin-bottom:14px">پشتیبان‌گیری و بازیابی</h2>
+  <div class="row" style="justify-content:center;max-width:320px;margin:0 auto">
+   <button onclick="backup()" style="padding:14px">📥 دریافت پشتیبان</button>
+   <button class="secondary" onclick="document.getElementById('restoreInput').click()" style="padding:14px">📤 بازیابی</button>
+  </div>
+  <input id="restoreInput" type="file" accept=".json" class="hidden" onchange="restore(event)">
+  <p class="small" style="margin-top:12px;margin-bottom:0">مرتب پشتیبان بگیر تا مدارکت گم نشوند</p>
+ </section>
+
+ <section class="card">
+  <h2>مدارک ثبت‌شده</h2>
+  <div id="documents"></div>
+ </section>
+</main>
+
+<div id="lightbox">
+  <button class="close-btn" onclick="closeLightbox()">✕ بستن</button>
+  <div class="toolbar">
+    <button onclick="zoomBy(0.25)">＋ بزرگ</button>
+    <button onclick="zoomBy(-0.25)">－ کوچک</button>
+    <button class="secondary" onclick="resetZoom()">بازنشانی</button>
+  </div>
+  <div id="lb-img-wrap">
+    <img id="lb-img" alt="تصویر">
+  </div>
+</div>
+
+<div id="settingsModal" class="modal-bg hidden">
+  <div class="modal">
+    <h3>⚙️ تنظیمات</h3>
+
+    <div class="settings-section">
+      <h2 style="font-size:15px;margin-bottom:10px">🎨 تم رنگی</h2>
+      <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:8px">
+        <button class="theme-btn" data-theme="default" onclick="setTheme('default')" style="background:#e5eef9;color:#173b64">آبی (پیش‌فرض)</button>
+        <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')" style="background:#1e293b;color:#e2e8f0">حالت شب</button>
+        <button class="theme-btn" data-theme="green" onclick="setTheme('green')" style="background:#dcfce7;color:#166534">سبز</button>
+        <button class="theme-btn" data-theme="purple" onclick="setTheme('purple')" style="background:#ede9fe;color:#5b21b6">بنفش</button>
+        <button class="theme-btn" data-theme="orange" onclick="setTheme('orange')" style="background:#ffedd5;color:#c2410c">نارنجی</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h2 style="font-size:15px;margin-bottom:10px">🔑 تغییر رمز</h2>
+      <input id="oldPass" type="password" inputmode="numeric" maxlength="8" placeholder="رمز فعلی" autocomplete="off">
+      <br><br>
+      <input id="newPass" type="password" inputmode="numeric" maxlength="8" placeholder="رمز جدید (۴ تا ۸ رقم)" autocomplete="off">
+      <br><br>
+      <input id="newPass2" type="password" inputmode="numeric" maxlength="8" placeholder="تکرار رمز جدید" autocomplete="off">
+      <br><br>
+      <button style="width:100%" onclick="changePassword()">تغییر رمز</button>
+    </div>
+
+    <button class="secondary" style="width:100%;margin-top:16px" onclick="closeSettings()">بستن</button>
+  </div>
+</div>
+
+
+<!-- مودال دوربین -->
+<div id="camModal">
+  <video id="camVideo" playsinline autoplay muted></video>
+  <p class="cam-hint">دوربین عقب/جلو را عوض کنید · زوم را تنظیم کنید · دکمه عکس را بزنید</p>
+  <div id="camToolbar">
+    <button type="button" class="secondary" onclick="closeCamera()">✕ بستن</button>
+    <button type="button" onclick="switchCamera()">🔄 جلو/عقب</button>
+    <label style="color:white;font-size:13px;display:flex;align-items:center;gap:6px">
+      زوم
+      <input id="camZoom" type="range" min="1" max="3" step="0.1" value="1" oninput="setCamZoom(this.value)">
+    </label>
+    <button type="button" style="background:#22c55e;font-size:18px;padding:14px 22px" onclick="capturePhoto()">📸 عکس</button>
+  </div>
+  <canvas id="camCanvas" class="hidden"></canvas>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const DB = "archive_db_v2";
+const PASS_KEY = "archive_pass_v1";
+const THEME_KEY = "archive_theme_v1";
+
+let db, docs = [], cats = [
+  {id:"home", name:"مدارک خانه"},
+  {id:"car", name:"مدارک خودرو"},
+  {id:"id", name:"مدارک هویتی"},
+  {id:"bank", name:"بانک و مالی"},
+  {id:"health", name:"مدارک پزشکی"},
+  {id:"work", name:"مدارک کاری"},
+  {id:"edu", name:"تحصیلی"},
+  {id:"other", name:"سایر مدارک"}
+];
+let selected = "all", editing = null, pending = [];
+let catManageOpen = false;
+
+let lbScale = 1, lbX = 0, lbY = 0;
+let lbDragging = false, lbStartX = 0, lbStartY = 0, lbOrigX = 0, lbOrigY = 0;
+
+function toast(msg, ms = 2800) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), ms);
+}
+
+function getStoredPass() {
+  return localStorage.getItem(PASS_KEY) || "";
+}
+
+function setStoredPass(p) {
+  localStorage.setItem(PASS_KEY, p);
+}
+
+function isValidPass(p) {
+  return /^\d{4,8}$/.test(p);
+}
+
+function showLoginUI() {
+  const hasPass = !!getStoredPass();
+  document.getElementById("loginNormal").classList.toggle("hidden", !hasPass);
+  document.getElementById("loginSetup").classList.toggle("hidden", hasPass);
+  document.getElementById("error").textContent = "";
+  if (!hasPass) {
+    document.getElementById("setupPass").value = "";
+    document.getElementById("setupPass2").value = "";
+  } else {
+    document.getElementById("password").value = "";
+  }
+}
+
+function setupPassword() {
+  const p1 = document.getElementById("setupPass").value.trim();
+  const p2 = document.getElementById("setupPass2").value.trim();
+  const err = document.getElementById("error");
+  if (!isValidPass(p1)) {
+    err.textContent = "رمز باید بین ۴ تا ۸ رقم باشد";
+    return;
+  }
+  if (p1 !== p2) {
+    err.textContent = "رمز و تکرار آن یکسان نیستند";
+    return;
+  }
+  setStoredPass(p1);
+  err.textContent = "";
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  init();
+  toast("رمز با موفقیت تنظیم شد");
+}
+
+function login() {
+  const entered = document.getElementById("password").value.trim();
+  const stored = getStoredPass();
+  if (!stored) {
+    showLoginUI();
+    return;
+  }
+  if (entered === stored) {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    init();
+  } else {
+    document.getElementById("error").textContent = "رمز اشتباه است";
+  }
+}
+
+document.getElementById("password").addEventListener("keydown", e => {
+  if (e.key === "Enter") login();
+});
+document.getElementById("setupPass2").addEventListener("keydown", e => {
+  if (e.key === "Enter") setupPassword();
+});
+
+function applyTheme(theme) {
+  document.body.classList.remove("theme-dark", "theme-green", "theme-purple", "theme-orange");
+  if (theme && theme !== "default") {
+    document.body.classList.add("theme-" + theme);
+  }
+  document.querySelectorAll(".theme-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.theme === (theme || "default"));
+  });
+}
+
+function setTheme(theme) {
+  localStorage.setItem(THEME_KEY, theme);
+  applyTheme(theme);
+  toast("تم اعمال شد");
+}
+
+function loadTheme() {
+  const t = localStorage.getItem(THEME_KEY) || "default";
+  applyTheme(t);
+}
+
+function openSettings() {
+  document.getElementById("settingsModal").classList.remove("hidden");
+  document.getElementById("oldPass").value = "";
+  document.getElementById("newPass").value = "";
+  document.getElementById("newPass2").value = "";
+  loadTheme();
+}
+
+function closeSettings() {
+  document.getElementById("settingsModal").classList.add("hidden");
+}
+
+document.getElementById("settingsModal").addEventListener("click", e => {
+  if (e.target.id === "settingsModal") closeSettings();
+});
+
+function changePassword() {
+  const oldP = document.getElementById("oldPass").value.trim();
+  const newP = document.getElementById("newPass").value.trim();
+  const newP2 = document.getElementById("newPass2").value.trim();
+  if (oldP !== getStoredPass()) {
+    toast("رمز فعلی اشتباه است");
+    return;
+  }
+  if (!isValidPass(newP)) {
+    toast("رمز جدید باید بین ۴ تا ۸ رقم باشد");
+    return;
+  }
+  if (newP !== newP2) {
+    toast("رمز جدید و تکرار آن یکسان نیستند");
+    return;
+  }
+  setStoredPass(newP);
+  document.getElementById("oldPass").value = "";
+  document.getElementById("newPass").value = "";
+  document.getElementById("newPass2").value = "";
+  toast("رمز با موفقیت تغییر کرد");
+}
+
+function checkAuthAndStart() {
+  loadTheme();
+  showLoginUI();
+}
+checkAuthAndStart();
+
+function init() {
+  const request = indexedDB.open(DB, 1);
+  request.onupgradeneeded = () => {
+    const d = request.result;
+    if (!d.objectStoreNames.contains("docs")) d.createObjectStore("docs", {keyPath: "id"});
+    if (!d.objectStoreNames.contains("cats")) d.createObjectStore("cats", {keyPath: "id"});
+  };
+  request.onsuccess = async () => {
+    db = request.result;
+    const saved = await all("cats");
+    if (saved.length) cats = saved;
+    else for (const c of cats) await put("cats", c);
+    docs = await all("docs");
+    renderCategories();
+    render();
+  };
+  request.onerror = () => toast("ذخیره‌سازی فعال نشد؛ لطفاً با Chrome باز کن.");
+}
+
+function all(store) {
+  return new Promise((resolve, reject) => {
+    const r = db.transaction(store).objectStore(store).getAll();
+    r.onsuccess = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+  });
+}
+function put(store, value) {
+  return new Promise((resolve, reject) => {
+    const r = db.transaction(store, "readwrite").objectStore(store).put(value);
+    r.onsuccess = () => resolve();
+    r.onerror = () => reject(r.error);
+  });
+}
+function remove(store, id) {
+  return new Promise((resolve, reject) => {
+    const r = db.transaction(store, "readwrite").objectStore(store).delete(id);
+    r.onsuccess = () => resolve();
+    r.onerror = () => reject(r.error);
+  });
+}
+
+function esc(s = "") {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function catName(id) {
+  return cats.find(c => c.id === id)?.name || "سایر مدارک";
+}
+function formatSize(bytes) {
+  if (!bytes) return "۰ B";
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return Math.ceil(bytes / 1024) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+function safeName(str) {
+  return String(str).replace(/[\\/:*?"<>|]/g, " ").trim() || "فایل";
+}
+
+function renderCategories() {
+  const catEl = document.getElementById("categories");
+  catEl.innerHTML =
+    `<button class="cat ${selected==="all"?"active":""}" onclick="choose('all')">🗂️ همه مدارک</button>` +
+    cats.map(c => `<button class="cat ${selected===c.id?"active":""}" onclick="choose('${c.id}')">📁 ${esc(c.name)}</button>`).join("");
+  document.getElementById("category").innerHTML = cats.map(c =>
+    `<option value="${c.id}">${esc(c.name)}</option>`
+  ).join("");
+  if (selected !== "all") {
+    document.getElementById("category").value = selected;
+  }
+  renderCatManage();
+}
+
+function renderCatManage() {
+  const list = document.getElementById("catList");
+  if (!cats.length) {
+    list.innerHTML = "<p class='small'>پوشه‌ای وجود ندارد.</p>";
+    return;
+  }
+  list.innerHTML = cats.map(c => `
+    <div class="cat-manage" data-id="${c.id}">
+      <input value="${esc(c.name)}" onchange="renameCat('${c.id}', this.value)">
+      <button class="danger" onclick="deleteCat('${c.id}')">حذف</button>
+    </div>
+  `).join("");
+}
+
+function toggleCatManage() {
+  catManageOpen = !catManageOpen;
+  document.getElementById("catManage").classList.toggle("hidden", !catManageOpen);
+  if (catManageOpen) renderCatManage();
+}
+
+function choose(id) {
+  selected = id;
+  renderCategories();
+  if (id !== "all") {
+    document.getElementById("category").value = id;
+  }
+  render();
+}
+
+function addCat() {
+  const name = document.getElementById("newCat").value.trim();
+  if (!name) { toast("نام پوشه را وارد کن"); return; }
+  if (cats.some(c => c.name === name)) { toast("این نام پوشه قبلاً وجود دارد"); return; }
+  const c = {id: crypto.randomUUID(), name};
+  cats.push(c);
+  put("cats", c).then(() => {
+    renderCategories();
+    document.getElementById("newCat").value = "";
+    toast("پوشه «" + name + "» اضافه شد");
+  });
+}
+
+async function renameCat(id, newName) {
+  newName = newName.trim();
+  if (!newName) { toast("نام نمی‌تواند خالی باشد"); renderCatManage(); return; }
+  if (cats.some(c => c.id !== id && c.name === newName)) { toast("این نام قبلاً استفاده شده"); renderCatManage(); return; }
+  const c = cats.find(x => x.id === id);
+  if (!c) return;
+  c.name = newName;
+  await put("cats", c);
+  renderCategories();
+  render();
+  toast("نام پوشه تغییر کرد");
+}
+
+async function deleteCat(id) {
+  const used = docs.filter(d => d.category === id).length;
+  if (used > 0) {
+    if (!confirm(`این پوشه در ${used} مدرک استفاده شده. با حذف، آن مدارک به «سایر مدارک» منتقل می‌شوند. ادامه می‌دهی؟`)) return;
+    for (const d of docs) {
+      if (d.category === id) {
+        d.category = "other";
+        await put("docs", d);
+      }
+    }
+    docs = await all("docs");
+  } else if (!confirm("این پوشه حذف شود؟")) return;
+
+  cats = cats.filter(c => c.id !== id);
+  await remove("cats", id);
+  if (selected === id) selected = "all";
+  renderCategories();
+  render();
+  toast("پوشه حذف شد");
+}
+
+function getFiles(input) {
+  const selectedFiles = [...input.files];
+  for (const f of selectedFiles) {
+    if (f.size > 30 * 1024 * 1024) {
+      toast("حداکثر اندازه هر فایل ۳۰ مگابایت است");
+      continue;
+    }
+    pending.push({
+      id: crypto.randomUUID(),
+      name: f.name,
+      type: f.type || "application/octet-stream",
+      blob: f,
+      size: f.size
+    });
+  }
+  input.value = "";
+  showPending();
+  if (selectedFiles.length > 0) {
+    toast(selectedFiles.length + " فایل اضافه شد");
+  }
+}
+
+document.getElementById("gallery").onchange = function () {
+  getFiles(this);
+};
+document.getElementById("filePicker").onchange = function () {
+  getFiles(this);
+};
+document.getElementById("camera").onchange = function () {
+  getFiles(this);
+};
+
+/* ---- دوربین داخلی ---- */
+let camStream = null;
+let camFacing = "environment"; // عقب
+let camTrack = null;
+
+async function openCamera() {
+  // اگر getUserMedia پشتیبانی نشود، به ورودی capture سوییچ کن
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    document.getElementById("camera").click();
+    return;
+  }
+  try {
+    await startCamStream();
+    document.getElementById("camModal").classList.add("show");
+    document.getElementById("camZoom").value = 1;
+  } catch (err) {
+    console.error(err);
+    toast("دسترسی به دوربین ممکن نشد؛ از انتخاب فایل استفاده کن");
+    document.getElementById("camera").click();
+  }
+}
+
+async function startCamStream() {
+  stopCamStream();
+  const constraints = {
+    audio: false,
+    video: {
+      facingMode: { ideal: camFacing },
+      width: { ideal: 1920 },
+      height: { ideal: 1080 }
+    }
+  };
+  camStream = await navigator.mediaDevices.getUserMedia(constraints);
+  const video = document.getElementById("camVideo");
+  video.srcObject = camStream;
+  camTrack = camStream.getVideoTracks()[0] || null;
+  // زوم اگر پشتیبانی شود
+  try {
+    const caps = camTrack?.getCapabilities?.();
+    const zoomInput = document.getElementById("camZoom");
+    if (caps && caps.zoom) {
+      zoomInput.min = caps.zoom.min || 1;
+      zoomInput.max = caps.zoom.max || 3;
+      zoomInput.step = caps.zoom.step || 0.1;
+      zoomInput.value = caps.zoom.min || 1;
+      zoomInput.style.display = "";
+    } else {
+      // زوم نرم‌افزاری با CSS
+      zoomInput.min = 1;
+      zoomInput.max = 3;
+      zoomInput.step = 0.1;
+      zoomInput.value = 1;
+    }
+  } catch (_) {}
+}
+
+function stopCamStream() {
+  if (camStream) {
+    camStream.getTracks().forEach(t => t.stop());
+    camStream = null;
+    camTrack = null;
+  }
+  const video = document.getElementById("camVideo");
+  if (video) video.srcObject = null;
+}
+
+function closeCamera() {
+  stopCamStream();
+  document.getElementById("camModal").classList.remove("show");
+  document.getElementById("camVideo").style.transform = "";
+}
+
+async function switchCamera() {
+  camFacing = camFacing === "environment" ? "user" : "environment";
+  try {
+    await startCamStream();
+    toast(camFacing === "environment" ? "دوربین عقب" : "دوربین جلو");
+  } catch (err) {
+    toast("تعویض دوربین ممکن نشد");
+  }
+}
+
+function setCamZoom(val) {
+  const v = parseFloat(val) || 1;
+  // تلاش برای زوم سخت‌افزاری
+  if (camTrack) {
+    try {
+      const caps = camTrack.getCapabilities?.();
+      if (caps && caps.zoom) {
+        camTrack.applyConstraints({ advanced: [{ zoom: v }] });
+        return;
+      }
+    } catch (_) {}
+  }
+  // زوم نرم‌افزاری
+  const video = document.getElementById("camVideo");
+  video.style.transform = `scale(${v})`;
+}
+
+async function capturePhoto() {
+  const video = document.getElementById("camVideo");
+  const canvas = document.getElementById("camCanvas");
+  if (!video.videoWidth) {
+    toast("صبر کن تا تصویر دوربین آماده شود");
+    return;
+  }
+  const w = video.videoWidth;
+  const h = video.videoHeight;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  // اگر زوم CSS داریم، فعلاً کل فریم را می‌گیریم
+  ctx.drawImage(video, 0, 0, w, h);
+  const blob = await new Promise(res => canvas.toBlob(res, "image/jpeg", 0.92));
+  if (!blob) {
+    toast("خطا در گرفتن عکس");
+    return;
+  }
+  const name = "عکس-" + new Date().toISOString().slice(0,19).replace(/[:T]/g,"-") + ".jpg";
+  pending.push({
+    id: crypto.randomUUID(),
+    name,
+    type: "image/jpeg",
+    blob,
+    size: blob.size
+  });
+  showPending();
+  toast("عکس اضافه شد");
+  // دوربین باز می‌ماند تا چند عکس پشت‌سرهم بگیری؛ در صورت تمایل ببند
+}
+
+const dropzone = document.getElementById("dropzone");
+["dragenter", "dragover"].forEach(ev => {
+  dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add("dragover"); });
+});
+["dragleave", "drop"].forEach(ev => {
+  dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove("dragover"); });
+});
+dropzone.addEventListener("drop", e => {
+  const files = [...e.dataTransfer.files];
+  for (const f of files) {
+    if (f.size > 30 * 1024 * 1024) { toast("حداکثر اندازه هر فایل ۳۰ مگابایت است"); continue; }
+    pending.push({
+      id: crypto.randomUUID(),
+      name: f.name,
+      type: f.type || "application/octet-stream",
+      blob: f,
+      size: f.size
+    });
+  }
+  showPending();
+  if (files.length > 1) toast(files.length + " فایل اضافه شد");
+});
+
+function showPending() {
+  const el = document.getElementById("pending");
+  if (!pending.length) { el.innerHTML = ""; return; }
+  el.innerHTML = pending.map((f, i) => {
+    let thumb = "";
+    if (f.type.startsWith("image/")) {
+      const url = URL.createObjectURL(f.blob);
+      thumb = `<img class="thumb" src="${url}" alt="" onclick="openLightbox('${url}')">`;
+    }
+    return `<div class="file-item">
+      ${thumb}
+      <span style="flex:1">${esc(f.name)} <span class="small">(${formatSize(f.size)})</span></span>
+      <button class="danger" style="padding:6px 10px;font-size:12px" onclick="removePending(${i})">حذف</button>
+    </div>`;
+  }).join("");
+}
+
+function removePending(i) {
+  pending.splice(i, 1);
+  showPending();
+}
+
+function resetForm() {
+  editing = null;
+  pending = [];
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("formTitle").textContent = "➕ افزودن مدرک";
+  if (selected !== "all") {
+    document.getElementById("category").value = selected;
+  }
+  showPending();
+  const gal = document.getElementById("gallery"); if (gal) gal.value = "";
+  const cam = document.getElementById("camera"); if (cam) cam.value = "";
+}
+
+async function saveDoc() {
+  const t = document.getElementById("title").value.trim();
+  if (!t) { toast("عنوان مدرک را وارد کن"); return; }
+  let old = docs.find(d => d.id === editing);
+  let files = [...(old?.files || [])];
+  files = files.concat(pending);
+
+  const d = {
+    id: editing || crypto.randomUUID(),
+    title: t,
+    category: document.getElementById("category").value,
+    description: document.getElementById("description").value,
+    files,
+    created: old?.created || Date.now(),
+    updated: Date.now()
+  };
+  await put("docs", d);
+  docs = await all("docs");
+  resetForm();
+  render();
+  toast("مدرک ذخیره شد");
+}
+
+function render() {
+  const q = document.getElementById("search").value.trim().toLocaleLowerCase();
+  const list = docs.filter(d =>
+    (selected === "all" || d.category === selected) &&
+    [d.title, d.description, catName(d.category), ...(d.files || []).map(f => f.name)]
+      .join(" ").toLocaleLowerCase().includes(q)
+  ).sort((a, b) => b.updated - a.updated);
+
+  document.getElementById("count").textContent = docs.length;
+  document.getElementById("filesCount").textContent = docs.reduce((n, d) => n + (d.files?.length || 0), 0);
+
+  const docsEl = document.getElementById("documents");
+  if (!list.length) {
+    docsEl.innerHTML = "<p class='small'>مدرکی پیدا نشد.</p>";
+    return;
+  }
+
+  docsEl.innerHTML = list.map(d => {
+    const imgFiles = (d.files || []).filter(f => f.type && f.type.startsWith("image/")).slice(0, 4);
+    let thumbs = "";
+    if (imgFiles.length) {
+      thumbs = `<div class="thumbs">` + imgFiles.map(f => {
+        const url = URL.createObjectURL(f.blob);
+        return `<img src="${url}" alt="" loading="lazy" onclick="openLightbox('${url}')">`;
+      }).join("") + `</div>`;
+    }
+    const totalSize = (d.files || []).reduce((s, f) => s + (f.size || 0), 0);
+    return `
+    <div class="doc">
+      <h3>📄 ${esc(d.title)}</h3>
+      <div>
+        <span class="badge">${esc(catName(d.category))}</span>
+        <span class="small">${(d.files || []).length} فایل · ${formatSize(totalSize)}</span>
+      </div>
+      ${thumbs}
+      <p>${esc(d.description || "بدون توضیحات")}</p>
+      <div class="row">
+        <button onclick="viewDoc('${d.id}')">مشاهده فایل‌ها</button>
+        <button class="secondary" onclick="editDoc('${d.id}')">ویرایش</button>
+        <button class="danger" onclick="deleteDoc('${d.id}')">حذف</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function editDoc(id) {
+  const d = docs.find(x => x.id === id);
+  if (!d) return;
+  editing = id;
+  document.getElementById("title").value = d.title;
+  document.getElementById("description").value = d.description || "";
+  document.getElementById("category").value = d.category;
+  pending = [];
+  showPending();
+  document.getElementById("formTitle").textContent = "✏️ ویرایش مدرک";
+  document.getElementById("form").scrollIntoView({behavior: "smooth"});
+  toast("در حال ویرایش — فایل‌های قبلی حفظ می‌شوند.");
+}
+
+async function deleteDoc(id) {
+  if (!confirm("مدرک و تمام فایل‌های آن حذف شود؟")) return;
+  await remove("docs", id);
+  docs = await all("docs");
+  render();
+  toast("مدرک حذف شد");
+}
+
+function viewDoc(id) {
+  const d = docs.find(x => x.id === id);
+  if (!d) return;
+
+  const bg = document.createElement("div");
+  bg.className = "modal-bg";
+  bg.onclick = e => { if (e.target === bg) bg.remove(); };
+
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <h3>📄 ${esc(d.title)}</h3>
+    <p class="small">${esc(catName(d.category))} · ${(d.files || []).length} فایل</p>
+    <p style="white-space:pre-wrap;font-size:14px;margin-bottom:12px">${esc(d.description || "")}</p>
+    <div id="modalFiles"></div>
+    <button class="secondary" style="width:100%;margin-top:14px" onclick="this.closest('.modal-bg').remove()">بستن</button>
+  `;
+  bg.appendChild(modal);
+  document.body.appendChild(bg);
+
+  const box = modal.querySelector("#modalFiles");
+  if (!(d.files && d.files.length)) {
+    box.innerHTML = "<p class='small'>فایلی وجود ندارد.</p>";
+    return;
+  }
+
+  d.files.forEach((f, idx) => {
+    const item = document.createElement("div");
+    item.className = "file-item";
+
+    if (f.type && f.type.startsWith("image/")) {
+      const url = URL.createObjectURL(f.blob);
+      const img = document.createElement("img");
+      img.className = "thumb";
+      img.src = url;
+      img.style.width = "72px";
+      img.style.height = "72px";
+      img.onclick = () => openLightbox(url);
+      item.appendChild(img);
+    }
+
+    const info = document.createElement("div");
+    info.style.flex = "1";
+    info.style.minWidth = "120px";
+    info.innerHTML = `<b style="font-size:13px">${esc(f.name)}</b><br><span class="small">${formatSize(f.size)}</span>`;
+    item.appendChild(info);
+
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.gap = "6px";
+    actions.style.width = "100%";
+    actions.style.marginTop = "8px";
+
+    const dl = document.createElement("button");
+    dl.textContent = "⬇️ دانلود";
+    dl.style.flex = "1";
+    dl.onclick = () => downloadFile(f, d);
+
+    const shareBtn = document.createElement("button");
+    shareBtn.className = "secondary";
+    shareBtn.textContent = "اشتراک";
+    shareBtn.style.flex = "1";
+    shareBtn.onclick = async () => {
+      try {
+        let blob = f.blob;
+        let name = f.name;
+        let type = f.type || "application/octet-stream";
+        // برای عکس‌ها JPG با کیفیت خوب بفرست
+        if (type.startsWith("image/")) {
+          try {
+            blob = await imageToJpeg(f.blob, 0.92);
+            name = safeName(f.name).replace(/\.[^.]+$/, "") + ".jpg";
+            type = "image/jpeg";
+          } catch (_) {}
+        }
+        const file = new File([blob], name, {type});
+        if (navigator.share) {
+          if (navigator.canShare?.({files: [file]})) {
+            await navigator.share({files: [file], title: d.title, text: d.title});
+            return;
+          }
+          // بعضی دستگاه‌ها فقط متن/لینک را پشتیبانی می‌کنند
+          await navigator.share({title: d.title, text: d.title + " — " + name});
+          return;
+        }
+      } catch (e) {
+        if (e && e.name === "AbortError") return;
+        console.error(e);
+      }
+      // اگر اشتراک پشتیبانی نشد: دانلود و راهنمایی
+      await downloadFile(f, d);
+      toast("اشتراک مستقیم پشتیبانی نشد؛ فایل دانلود شد تا از برنامه دلخواه بفرستی.");
+    };
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "danger";
+    delBtn.textContent = "حذف فایل";
+    delBtn.style.flex = "1";
+    delBtn.onclick = async () => {
+      if (!confirm("این فایل از مدرک حذف شود؟")) return;
+      d.files.splice(idx, 1);
+      d.updated = Date.now();
+      await put("docs", d);
+      docs = await all("docs");
+      bg.remove();
+      render();
+      toast("فایل حذف شد");
+      setTimeout(() => viewDoc(id), 250);
+    };
+
+    actions.append(dl, shareBtn, delBtn);
+    item.appendChild(actions);
+    box.appendChild(item);
+  });
+}
+
+async function downloadFile(f, doc) {
+  const cat = safeName(catName(doc.category));
+  let blob = f.blob;
+  let filename;
+
+  // عکس‌ها را با کیفیت خوب به JPG تبدیل کن
+  if (f.type && f.type.startsWith("image/")) {
+    try {
+      blob = await imageToJpeg(f.blob, 0.92);
+      const base = safeName(f.name).replace(/\.[^.]+$/, "") || "عکس";
+      filename = `مدارک - ${cat} - ${base}.jpg`;
+    } catch (e) {
+      console.error(e);
+      filename = `مدارک - ${cat} - ${safeName(f.name)}`;
+    }
+  } else {
+    filename = `مدارک - ${cat} - ${safeName(f.name)}`;
+  }
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast("ذخیره شد در دانلودها\n" + filename, 3500);
+}
+
+function imageToJpeg(blob, quality) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(b => {
+        if (b) resolve(b);
+        else reject(new Error("jpeg failed"));
+      }, "image/jpeg", quality);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("img load failed"));
+    };
+    img.src = url;
+  });
+}
+
+function openLightbox(url) {
+  const lb = document.getElementById("lightbox");
+  const img = document.getElementById("lb-img");
+  img.src = url;
+  lbScale = 1; lbX = 0; lbY = 0;
+  applyTransform();
+  lb.classList.add("show");
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("show");
+  document.getElementById("lb-img").src = "";
+}
+
+function applyTransform() {
+  const img = document.getElementById("lb-img");
+  img.style.transform = `translate(${lbX}px, ${lbY}px) scale(${lbScale})`;
+}
+
+function zoomBy(delta) {
+  lbScale = Math.min(5, Math.max(0.4, lbScale + delta));
+  applyTransform();
+}
+
+function resetZoom() {
+  lbScale = 1; lbX = 0; lbY = 0;
+  applyTransform();
+}
+
+(function setupLightboxTouch() {
+  const wrap = document.getElementById("lb-img-wrap");
+  let lastDist = 0;
+
+  wrap.addEventListener("touchstart", e => {
+    if (e.touches.length === 1) {
+      lbDragging = true;
+      lbStartX = e.touches[0].clientX;
+      lbStartY = e.touches[0].clientY;
+      lbOrigX = lbX;
+      lbOrigY = lbY;
+    } else if (e.touches.length === 2) {
+      lbDragging = false;
+      lastDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+    }
+  }, {passive: true});
+
+  wrap.addEventListener("touchmove", e => {
+    e.preventDefault();
+    if (e.touches.length === 1 && lbDragging) {
+      lbX = lbOrigX + (e.touches[0].clientX - lbStartX);
+      lbY = lbOrigY + (e.touches[0].clientY - lbStartY);
+      applyTransform();
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if (lastDist > 0) {
+        const scaleChange = dist / lastDist;
+        lbScale = Math.min(5, Math.max(0.4, lbScale * scaleChange));
+        applyTransform();
+      }
+      lastDist = dist;
+    }
+  }, {passive: false});
+
+  wrap.addEventListener("touchend", () => {
+    lbDragging = false;
+    lastDist = 0;
+  });
+
+  wrap.addEventListener("mousedown", e => {
+    lbDragging = true;
+    lbStartX = e.clientX;
+    lbStartY = e.clientY;
+    lbOrigX = lbX;
+    lbOrigY = lbY;
+  });
+  window.addEventListener("mousemove", e => {
+    if (!lbDragging) return;
+    lbX = lbOrigX + (e.clientX - lbStartX);
+    lbY = lbOrigY + (e.clientY - lbStartY);
+    applyTransform();
+  });
+  window.addEventListener("mouseup", () => { lbDragging = false; });
+
+  wrap.addEventListener("wheel", e => {
+    e.preventDefault();
+    zoomBy(e.deltaY > 0 ? -0.15 : 0.15);
+  }, {passive: false});
+})();
+
+async function backup() {
+  toast("در حال آماده‌سازی پشتیبان...");
+  const allDocs = await all("docs");
+  const allCats = await all("cats");
+  const output = {version: 2, date: new Date().toISOString(), categories: allCats, documents: []};
+
+  for (const d of allDocs) {
+    const x = {...d, files: []};
+    for (const f of (d.files || [])) {
+      const buf = await f.blob.arrayBuffer();
+      let binary = "";
+      const bytes = new Uint8Array(buf);
+      for (let i = 0; i < bytes.length; i += 8192)
+        binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+      x.files.push({
+        id: f.id,
+        name: f.name,
+        type: f.type,
+        size: f.size,
+        data: btoa(binary)
+      });
+    }
+    output.documents.push(x);
+  }
+
+  const blob = new Blob([JSON.stringify(output)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "backup-madarak-" + new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+  toast("فایل پشتیبان آماده شد");
+}
+
+async function restore(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!confirm("با بازیابی، تمام مدارک فعلی جایگزین می‌شوند. مطمئنی؟")) {
+    e.target.value = "";
+    return;
+  }
+
+  try {
+    toast("در حال بازیابی...");
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    if (!data.documents || !Array.isArray(data.documents)) {
+      toast("فایل پشتیبان نامعتبر است");
+      return;
+    }
+
+    const oldDocs = await all("docs");
+    for (const d of oldDocs) await remove("docs", d.id);
+    const oldCats = await all("cats");
+    for (const c of oldCats) await remove("cats", c.id);
+
+    if (data.categories && data.categories.length) {
+      cats = data.categories;
+      for (const c of cats) await put("cats", c);
+    } else {
+      for (const c of cats) await put("cats", c);
+    }
+
+    for (const d of data.documents) {
+      const files = [];
+      for (const f of (d.files || [])) {
+        if (!f.data) continue;
+        const binary = atob(f.data);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const blob = new Blob([bytes], {type: f.type || "application/octet-stream"});
+        files.push({
+          id: f.id || crypto.randomUUID(),
+          name: f.name,
+          type: f.type,
+          size: f.size || blob.size,
+          blob
+        });
+      }
+      const doc = {
+        id: d.id || crypto.randomUUID(),
+        title: d.title,
+        category: d.category,
+        description: d.description || "",
+        files,
+        created: d.created || Date.now(),
+        updated: d.updated || Date.now()
+      };
+      await put("docs", doc);
+    }
+
+    docs = await all("docs");
+    selected = "all";
+    renderCategories();
+    render();
+    toast("بازیابی با موفقیت انجام شد (" + docs.length + " مدرک)");
+  } catch (err) {
+    console.error(err);
+    toast("خطا در بازیابی فایل");
+  }
+  e.target.value = "";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "appId": "com.alireza10721.archive",
+  "appName": "بایگانی مدارک",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}
