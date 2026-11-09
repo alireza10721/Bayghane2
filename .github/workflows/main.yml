@@ -40,19 +40,32 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      
       - name: Add Android camera permission
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path("android/app/src/main/AndroidManifest.xml")
           s = p.read_text(encoding="utf-8")
+
           marker = '<uses-permission android:name="android.permission.CAMERA" />'
+
           if marker not in s:
-              pos = s.find(">")
-              s = s[:pos+1] + "\n    " + marker + s[pos+1:]
+              s, count = re.subn(
+                  r'(<manifest\b[^>]*>)',
+                  r'\1\n    ' + marker,
+                  s,
+                  count=1
+              )
+              if count != 1:
+                  raise SystemExit("Could not find manifest root tag")
+
           p.write_text(s, encoding="utf-8")
           PY
+
 
       - name: Build debug APK
         run: |
